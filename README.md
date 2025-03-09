@@ -21,3 +21,25 @@ The goal is to build a machine learning model that effectively identifies fraudu
    ```bash
    git clone https://github.com/yourusername/credit-card-fraud-detection.git
    cd credit-card-fraud-detection
+
+2. **Install dependencies**:
+```bash
+Collapse
+Wrap
+Copy
+pip install pandas matplotlib seaborn scikit-learn xgboost```
+
+
+Download the dataset:
+Get creditcard.csv from Kaggle and place it in the project folder.
+Run the notebook:
+Open the notebook: jupyter notebook Credit_Card_Fraud_Detection.ipynb
+Run the cells in order.
+Dependencies
+pandas
+matplotlib
+seaborn
+scikit-learn
+xgboost
+Dataset
+Credit Card Fraud Detection Dataset
