@@ -1,45 +1,52 @@
 # Credit Card Fraud Detection
 
-## Project Overview
-This project focuses on detecting fraudulent credit card transactions using machine learning. The dataset, sourced from [Kaggle](https://www.kaggle.com/mlg-ulb/creditcardfraud), contains 284,807 transactions from European cardholders in September 2013, with only 492 labeled as fraudulent (0.172%). The features include 28 PCA-transformed variables, `Time`, and `Amount`, with the target variable `Class` indicating fraud (1) or legitimate (0). The dataset’s severe class imbalance is a central challenge in this analysis.
+A lightweight yet extensible machine learning project for detecting fraudulent
+credit card transactions. It ships with a command line interface for training
+and evaluating a logistic regression baseline on either the public Kaggle
+[credit card fraud dataset](https://www.kaggle.com/mlg-ulb/creditcardfraud)
+or on quickly generated synthetic data.
 
-## Objective
-The goal is to build a machine learning model that effectively identifies fraudulent transactions despite the imbalanced dataset. We prioritize the **Area Under the Precision-Recall Curve (AUPRC)** as the key evaluation metric to balance precision and recall.
+## Features
+- Reproducible training pipeline with standard scaling and class imbalance
+  handling
+- ROC AUC and classification report metrics
+- Optional evaluation script for existing models
+- Basic unit tests and GitHub Actions workflow for continuous integration
 
-## Methodology
-- **Data Exploration**: Loaded the dataset, visualized features like `Amount` and `Time`, and confirmed no missing values.
-- **Data Preprocessing**: Scaled `Time` and `Amount`, and split the data into training and testing sets with stratification to preserve the class distribution.
-- **Model Training**: Tested models such as Logistic Regression, Random Forest, and XGBoost, adjusting for class imbalance.
-- **Model Evaluation**: Assessed performance using AUPRC and selected the best-performing model.
-
-## Key Findings
-- The top model (e.g., Random Forest) demonstrated a strong AUPRC, indicating robust fraud detection capabilities.
-- Feature importance analysis revealed that certain PCA features and `Amount` were significant predictors of fraud.
-
-## How to Run the Code
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/yourusername/credit-card-fraud-detection.git
-   cd credit-card-fraud-detection
-
-2. **Install dependencies**:
+## Installation
 ```bash
-Collapse
-Wrap
-Copy
-pip install pandas matplotlib seaborn scikit-learn xgboost```
+git clone https://github.com/yourusername/credit-card-fraud-detection.git
+cd credit-card-fraud-detection
+pip install -r requirements.txt
+```
 
+## Training
+Download `creditcard.csv` from Kaggle and provide the path when training:
+```bash
+python src/train_model.py --data /path/to/creditcard.csv
+```
+If no data path is given, the script generates a synthetic dataset:
+```bash
+python src/train_model.py
+```
+The script prints evaluation metrics and saves the model to `model.joblib` by
+default. Additional options:
+```bash
+python src/train_model.py --help
+```
 
-Download the dataset:
-Get creditcard.csv from Kaggle and place it in the project folder.
-Run the notebook:
-Open the notebook: jupyter notebook Credit_Card_Fraud_Detection.ipynb
-Run the cells in order.
-Dependencies
-pandas
-matplotlib
-seaborn
-scikit-learn
-xgboost
-Dataset
-Credit Card Fraud Detection Dataset
+## Evaluation
+To evaluate a previously trained model on a dataset:
+```bash
+python src/evaluate_model.py --data /path/to/creditcard.csv --model model.joblib
+```
+
+## Tests
+Run the unit tests with:
+```bash
+pytest
+```
+
+## License
+This project is licensed under the terms of the MIT license. See
+[LICENSE](LICENSE) for details.
