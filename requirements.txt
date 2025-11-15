@@ -1,4 +1,9 @@
 pandas
+matplotlib
+seaborn
 scikit-learn
-joblib
-pytest
+xgboost
+jupyter
+nbconvert
+imbalanced-learn
+lightgbm
