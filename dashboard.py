@@ -272,50 +272,57 @@ with tab_performance:
     
     with plot_col_left:
         st.subheader("💼 Business Cost Curve")
+        sub_tab_cost = st.tabs(["Cost Calibration Curve"])[0]
+        
         if test_preds is not None:
-            fig_cost = go.Figure()
-            # Cost curve trace
-            fig_cost.add_trace(go.Scatter(
-                x=t_range, y=cost_vals,
-                mode='lines',
-                name='Operational Cost ($)',
-                line=dict(color='#ff4b4b', width=3)
-            ))
-            # Optimal marker
-            fig_cost.add_trace(go.Scatter(
-                x=[tuned_threshold], y=[tuned_cost],
-                mode='markers+text',
-                marker=dict(size=14, color='#10B981', symbol='star'),
-                text=[f"Optimal: {tuned_threshold:.4f}"],
-                textposition="bottom center",
-                name="Tuned Threshold"
-            ))
-            # Reference lines
-            fig_cost.add_shape(
-                type='line', line=dict(dash='dash', color='gray', width=1.5),
-                x0=0, x1=1, y0=do_nothing, y1=do_nothing
-            )
-            fig_cost.add_annotation(
-                x=0.5, y=do_nothing, text="Do Nothing Base Cost", showarrow=False, yshift=10, font=dict(color="gray")
-            )
-            
-            fig_cost.update_layout(
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(30, 41, 59, 0.2)',
-                font=dict(color="white"),
-                xaxis=dict(title="Decision Threshold"),
-                yaxis=dict(title="Total Business Cost ($)"),
-                margin=dict(l=40, r=40, t=40, b=40)
-            )
-            st.plotly_chart(fig_cost, use_container_width=True)
+            with sub_tab_cost:
+                fig_cost = go.Figure()
+                # Cost curve trace
+                fig_cost.add_trace(go.Scatter(
+                    x=t_range, y=cost_vals,
+                    mode='lines',
+                    name='Operational Cost ($)',
+                    line=dict(color='#ff4b4b', width=3)
+                ))
+                # Optimal marker
+                fig_cost.add_trace(go.Scatter(
+                    x=[tuned_threshold], y=[tuned_cost],
+                    mode='markers+text',
+                    marker=dict(size=14, color='#10B981', symbol='star'),
+                    text=[f"Optimal: {tuned_threshold:.4f}"],
+                    textposition="bottom center",
+                    name="Tuned Threshold"
+                ))
+                # Reference lines
+                fig_cost.add_shape(
+                    type='line', line=dict(dash='dash', color='gray', width=1.5),
+                    x0=0, x1=1, y0=do_nothing, y1=do_nothing
+                )
+                fig_cost.add_annotation(
+                    x=0.5, y=do_nothing, text="Do Nothing Base Cost", showarrow=False, yshift=10, font=dict(color="gray")
+                )
+                
+                fig_cost.update_layout(
+                    height=450,
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(30, 41, 59, 0.2)',
+                    font=dict(color="white"),
+                    xaxis=dict(title="Decision Threshold"),
+                    yaxis=dict(title="Total Business Cost ($)"),
+                    margin=dict(l=50, r=30, t=30, b=50)
+                )
+                st.plotly_chart(fig_cost, use_container_width=True)
         else:
-            st.info("Demo Mode: Run training to generate live Business Cost Curve.")
+            with sub_tab_cost:
+                st.info("Demo Mode: Run training to generate live Business Cost Curve.")
             
     with plot_col_right:
         st.subheader("📈 Precision-Recall & ROC Curves")
-        sub_tab_pr, sub_tab_roc = st.tabs(["Precision-Recall Curve", "ROC Curve"])
-        
         if test_preds is not None:
+            sub_tab_pr, sub_tab_roc = st.tabs([
+                f"Precision-Recall (AUPRC: {metrics['auprc']:.4f})", 
+                f"ROC Curve (AUC: {metrics['roc_auc']:.4f})"
+            ])
             y_true = test_preds["y_true"]
             y_prob = test_preds["y_prob"]
             
@@ -323,8 +330,7 @@ with tab_performance:
                 precision, recall, pr_thresholds = precision_recall_curve(y_true, y_prob)
                 fig_pr = px.line(
                     x=recall, y=precision,
-                    labels={"x": "Recall (True Positive Rate)", "y": "Precision (PPV)"},
-                    title=f"Precision-Recall Curve (AUPRC: {metrics['auprc']:.4f})"
+                    labels={"x": "Recall (True Positive Rate)", "y": "Precision (PPV)"}
                 )
                 # Highlight tuned threshold
                 idx_pr = np.argmin(np.abs(pr_thresholds - tuned_threshold))
@@ -337,7 +343,11 @@ with tab_performance:
                     name="Tuned Threshold"
                 ))
                 fig_pr.update_layout(
-                    paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(30, 41, 59, 0.2)', font=dict(color="white")
+                    height=450,
+                    margin=dict(l=50, r=30, t=30, b=50),
+                    paper_bgcolor='rgba(0,0,0,0)', 
+                    plot_bgcolor='rgba(30, 41, 59, 0.2)', 
+                    font=dict(color="white")
                 )
                 st.plotly_chart(fig_pr, use_container_width=True)
                 
@@ -345,8 +355,7 @@ with tab_performance:
                 fpr, tpr, roc_thresholds = roc_curve(y_true, y_prob)
                 fig_roc = px.line(
                     x=fpr, y=tpr,
-                    labels={"x": "False Positive Rate (FPR)", "y": "True Positive Rate (TPR)"},
-                    title=f"ROC Curve (AUC: {metrics['roc_auc']:.4f})"
+                    labels={"x": "False Positive Rate (FPR)", "y": "True Positive Rate (TPR)"}
                 )
                 fig_roc.add_shape(
                     type='line', line=dict(dash='dash', color='gray'), x0=0, x1=1, y0=0, y1=1
@@ -361,11 +370,17 @@ with tab_performance:
                     name="Tuned Threshold"
                 ))
                 fig_roc.update_layout(
-                    paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(30, 41, 59, 0.2)', font=dict(color="white")
+                    height=450,
+                    margin=dict(l=50, r=30, t=30, b=50),
+                    paper_bgcolor='rgba(0,0,0,0)', 
+                    plot_bgcolor='rgba(30, 41, 59, 0.2)', 
+                    font=dict(color="white")
                 )
                 st.plotly_chart(fig_roc, use_container_width=True)
         else:
-            st.info("Demo Mode: Run training to view interactive curves.")
+            sub_tab_pr, sub_tab_roc = st.tabs(["Precision-Recall Curve", "ROC Curve"])
+            with sub_tab_pr:
+                st.info("Demo Mode: Run training to view interactive curves.")
 
 # ==================== Tab 2: Model Sandbox & Explainability (SHAP) ====================
 with tab_sandbox:
@@ -520,70 +535,72 @@ with tab_sandbox:
         exp_col_l, exp_col_r = st.columns(2)
         
         with exp_col_l:
-            st.subheader("🔍 Feature Attribution (Local SHAP Plot)")
-            st.write("This waterfall chart explains how each feature pushed the model's decision away from the baseline score (using the LightGBM classifier component).")
+            st.subheader("🔍 Feature Attribution (Local SHAP)")
+            sub_tab_shap = st.tabs(["SHAP Waterfall Explanation"])[0]
             
-            with st.spinner("Computing local SHAP values..."):
-                try:
-                    lgb_model = stack_clf.stacking_clf.named_estimators_["lgb"]
-                    explainer = shap.TreeExplainer(lgb_model)
-                    
-                    # Compute SHAP
-                    shap_values = explainer(X_after_ae)
-                    
-                    fig, ax = plt.subplots(figsize=(10, 5))
-                    # Adjust parameters for beautiful display
-                    shap.plots.waterfall(shap_values[0], max_display=10, show=False)
-                    fig.patch.set_facecolor('#0B0F19')
-                    ax.set_facecolor('#0B0F19')
-                    ax.tick_params(colors='white')
-                    ax.xaxis.label.set_color('white')
-                    ax.yaxis.label.set_color('white')
-                    for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] +
-                                 ax.get_xticklabels() + ax.get_yticklabels()):
-                        item.set_fontsize(10)
+            with sub_tab_shap:
+                with st.spinner("Computing local SHAP values..."):
+                    try:
+                        lgb_model = stack_clf.stacking_clf.named_estimators_["lgb"]
+                        explainer = shap.TreeExplainer(lgb_model)
                         
-                    plt.title("SHAP Waterfall (LightGBM Component)", color='white', fontsize=12, pad=15)
-                    plt.tight_layout()
-                    st.pyplot(fig)
-                    plt.close(fig)
-                except Exception as e:
-                    st.error(f"Could not compute SHAP: {e}")
+                        # Compute SHAP
+                        shap_values = explainer(X_after_ae)
+                        
+                        fig, ax = plt.subplots(figsize=(10, 4.45))
+                        # Adjust parameters for beautiful display
+                        shap.plots.waterfall(shap_values[0], max_display=10, show=False)
+                        fig.patch.set_facecolor('#0B0F19')
+                        ax.set_facecolor('#0B0F19')
+                        ax.tick_params(colors='white')
+                        ax.xaxis.label.set_color('white')
+                        ax.yaxis.label.set_color('white')
+                        for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] +
+                                     ax.get_xticklabels() + ax.get_yticklabels()):
+                            item.set_fontsize(10)
+                            
+                        plt.tight_layout()
+                        st.pyplot(fig)
+                        plt.close(fig)
+                    except Exception as e:
+                        st.error(f"Could not compute SHAP: {e}")
                     
         with exp_col_r:
-            st.subheader("🧠 Neural Reconstruction Error Breakdown")
-            st.write("Our PyTorch Autoencoder is trained to reconstruct normal transactions. A high reconstruction error indicates a novel outlier feature pattern.")
+            st.subheader("🧠 Neural Reconstruction Error")
+            sub_tab_ae = st.tabs(["Anomaly Driver Decomposition"])[0]
             
-            # Compute feature-wise reconstruction error
-            ae_net = autoencoder_transformer.model
-            ae_net.eval()
-            
-            columns = list(X_before_ae.columns)
-            tensor_x = torch.tensor(X_before_ae.values.astype(np.float32))
-            
-            with torch.no_grad():
-                reconstructed = ae_net(tensor_x)
-                feature_errors = ((tensor_x - reconstructed) ** 2).numpy()[0]
+            with sub_tab_ae:
+                # Compute feature-wise reconstruction error
+                ae_net = autoencoder_transformer.model
+                ae_net.eval()
                 
-            df_ae = pd.DataFrame({
-                "Feature": columns,
-                "Squared Error": feature_errors
-            }).sort_values(by="Squared Error", ascending=True).tail(10)
-            
-            fig_ae = px.bar(
-                df_ae, x="Squared Error", y="Feature",
-                orientation='h',
-                title="Top 10 Anomaly Drivers (Reconstruction Error)",
-                color="Squared Error",
-                color_continuous_scale="Reds"
-            )
-            fig_ae.update_layout(
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(30, 41, 59, 0.2)',
-                font=dict(color="white"),
-                coloraxis_showscale=False
-            )
-            st.plotly_chart(fig_ae, use_container_width=True)
+                columns = list(X_before_ae.columns)
+                tensor_x = torch.tensor(X_before_ae.values.astype(np.float32))
+                
+                with torch.no_grad():
+                    reconstructed = ae_net(tensor_x)
+                    feature_errors = ((tensor_x - reconstructed) ** 2).numpy()[0]
+                    
+                df_ae = pd.DataFrame({
+                    "Feature": columns,
+                    "Squared Error": feature_errors
+                }).sort_values(by="Squared Error", ascending=True).tail(10)
+                
+                fig_ae = px.bar(
+                    df_ae, x="Squared Error", y="Feature",
+                    orientation='h',
+                    color="Squared Error",
+                    color_continuous_scale="Reds"
+                )
+                fig_ae.update_layout(
+                    height=400,
+                    margin=dict(l=60, r=20, t=10, b=40),
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(30, 41, 59, 0.2)',
+                    font=dict(color="white"),
+                    coloraxis_showscale=False
+                )
+                st.plotly_chart(fig_ae, use_container_width=True)
 
 # ==================== Tab 3: Batch Prediction Service ====================
 with tab_batch:
@@ -624,14 +641,21 @@ with tab_batch:
                         st.success("Batch completed successfully!")
                         
                         # Render distribution and overview plots
+                        # Summary stats columns (Full-width row)
+                        sc1, sc2, sc3 = st.columns(3)
+                        with sc1:
+                            st.metric("Total Records Scored", f"{total}")
+                        with sc2:
+                            st.metric("Declined Transactions", f"{flagged}", f"{flag_pct:.2f}% Decline Rate", delta_color="inverse")
+                        with sc3:
+                            st.metric("Approved Transactions", f"{total - flagged}", f"{100 - flag_pct:.2f}% Approval Rate")
+                        
+                        st.write("---")
+                        
+                        # Render distribution and overview plots side-by-side
                         b_col1, b_col2 = st.columns(2)
                         
                         with b_col1:
-                            st.write("### Risk Summary Metrics")
-                            st.write(f"*   **Total Records Scored:** `{total}`")
-                            st.write(f"*   **Declined Transactions:** `{flagged}` ({flag_pct:.3f}%)")
-                            st.write(f"*   **Approved Transactions:** `{total - flagged}` ({100 - flag_pct:.3f}%)")
-                            
                             # Interactive Pie Chart
                             fig_pie = px.pie(
                                 names=["Approved", "Declined"],
@@ -639,7 +663,12 @@ with tab_batch:
                                 color_discrete_sequence=["#10B981", "#EF4444"],
                                 title="Transaction Approval Ratio"
                             )
-                            fig_pie.update_layout(paper_bgcolor='rgba(0,0,0,0)', font=dict(color="white"))
+                            fig_pie.update_layout(
+                                height=380,
+                                margin=dict(l=20, r=20, t=40, b=20),
+                                paper_bgcolor='rgba(0,0,0,0)', 
+                                font=dict(color="white")
+                            )
                             st.plotly_chart(fig_pie, use_container_width=True)
                             
                         with b_col2:
@@ -652,7 +681,11 @@ with tab_batch:
                             )
                             fig_hist.add_vline(x=tuned_threshold, line_dash="dash", line_color="#10B981")
                             fig_hist.update_layout(
-                                paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(30, 41, 59, 0.2)', font=dict(color="white")
+                                height=380,
+                                margin=dict(l=20, r=20, t=40, b=20),
+                                paper_bgcolor='rgba(0,0,0,0)', 
+                                plot_bgcolor='rgba(30, 41, 59, 0.2)', 
+                                font=dict(color="white")
                             )
                             st.plotly_chart(fig_hist, use_container_width=True)
                             
