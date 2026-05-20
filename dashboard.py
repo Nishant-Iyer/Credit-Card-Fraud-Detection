@@ -53,6 +53,10 @@ st.markdown("""
         margin-bottom: 15px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         transition: transform 0.2s, border-color 0.2s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 120px;
     }
     
     .metric-card:hover {
@@ -644,11 +648,26 @@ with tab_batch:
                         # Summary stats columns (Full-width row)
                         sc1, sc2, sc3 = st.columns(3)
                         with sc1:
-                            st.metric("Total Records Scored", f"{total}")
+                            st.markdown(f"""
+                            <div class="metric-card">
+                                <div class="metric-title">Total Records Scored</div>
+                                <div class="metric-value">{total}</div>
+                            </div>
+                            """, unsafe_allow_html=True)
                         with sc2:
-                            st.metric("Declined Transactions", f"{flagged}", f"{flag_pct:.2f}% Decline Rate", delta_color="inverse")
+                            st.markdown(f"""
+                            <div class="metric-card">
+                                <div class="metric-title">Declined Transactions</div>
+                                <div class="metric-value loss">{flagged} <span style="font-size: 0.95rem; font-weight: 400; color: #EF4444;">({flag_pct:.2f}%)</span></div>
+                            </div>
+                            """, unsafe_allow_html=True)
                         with sc3:
-                            st.metric("Approved Transactions", f"{total - flagged}", f"{100 - flag_pct:.2f}% Approval Rate")
+                            st.markdown(f"""
+                            <div class="metric-card">
+                                <div class="metric-title">Approved Transactions</div>
+                                <div class="metric-value savings">{total - flagged} <span style="font-size: 0.95rem; font-weight: 400; color: #10B981;">({100 - flag_pct:.2f}%)</span></div>
+                            </div>
+                            """, unsafe_allow_html=True)
                         
                         st.write("---")
                         
