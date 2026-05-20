@@ -537,7 +537,7 @@ with tab_performance:
             with sub_tab_pr:
                 st.info("Demo Mode: Run training to view interactive curves.")
 
-# ==================== Tab 2: Model Sandbox & Explainability with tab_sandbox:
+with tab_sandbox:
     st.markdown("## 🧪 Live Simulation Sandbox & Model Explanations")
     st.markdown("Score individual transactions, audit their neural reconstruction anomaly, and inspect SHAP attributions.")
     
