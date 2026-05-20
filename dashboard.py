@@ -57,10 +57,44 @@ st.markdown("""
         color: #ffffff;
     }
     
-    h1, h2, h3, h4, h5, h6, [class*="Header"] {
-        font-family: 'Sora', 'Plus Jakarta Sans', sans-serif !important;
-        font-weight: 600;
-        letter-spacing: -0.02em;
+    /* Strict Premium Typography Hierarchy */
+    h1 {
+        font-size: 2.2rem !important;
+        font-family: 'Sora', sans-serif !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.03em !important;
+        margin-bottom: 0.5rem !important;
+        color: #ffffff !important;
+    }
+    
+    h2 {
+        font-size: 1.4rem !important;
+        font-family: 'Sora', sans-serif !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.02em !important;
+        margin-top: 1.2rem !important;
+        margin-bottom: 0.6rem !important;
+        color: #ffffff !important;
+    }
+    
+    h3 {
+        font-size: 1.12rem !important;
+        font-family: 'Sora', sans-serif !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.01em !important;
+        margin-top: 0.8rem !important;
+        margin-bottom: 0.4rem !important;
+        color: #ffffff !important;
+    }
+    
+    p, li, label, span, div {
+        font-family: 'DM Sans', sans-serif !important;
+    }
+    
+    .stMarkdown p {
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+        color: #cccccc !important;
     }
     
     .gradient-text {
@@ -81,7 +115,7 @@ st.markdown("""
         backdrop-filter: blur(25px) !important;
         border: 1px solid rgba(0, 212, 255, 0.15) !important;
         border-radius: 16px;
-        padding: 24px 16px;
+        padding: 16px 12px;
         margin-bottom: 15px;
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;
@@ -90,7 +124,7 @@ st.markdown("""
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        min-height: 140px;
+        min-height: 120px;
     }
     
     .metric-card:hover {
@@ -100,21 +134,24 @@ st.markdown("""
     }
     
     .metric-title {
-        font-size: 0.85rem;
+        font-size: 0.78rem;
         color: #aaaaaa;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-bottom: 8px;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px;
         font-family: 'Sora', sans-serif;
         font-weight: 500;
+        line-height: 1.35;
     }
     
     .metric-value {
-        font-size: 2.2rem;
+        font-size: 1.7rem;
         font-weight: 700;
         color: #ffffff;
         font-family: 'Sora', sans-serif;
-        line-height: 1.1;
+        line-height: 1.2;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     
     .metric-value.savings {
@@ -221,7 +258,7 @@ st.markdown("""
         display: flex;
         align-items: center;
         font-family: 'Sora', sans-serif !important;
-        font-size: 1.25rem;
+        font-size: 1.12rem;
         font-weight: 600;
         color: #ffffff;
         margin-bottom: 0.8rem;
@@ -231,8 +268,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title banner
-st.markdown('<h1 class="gradient-text" style="font-size: 2.5rem; margin-bottom: 0.2rem;">🛡️ Credit Card Fraud Intelligence Platform</h1>', unsafe_allow_html=True)
-st.markdown('<p style="font-size: 1.15rem; color: #aaaaaa; font-family: \'Sora\', sans-serif; margin-bottom: 1.5rem;">Production-Grade Stacking Ensemble, Neural Reconstruction Anomaly Engine & Cost-Benefit Optimizer</p>', unsafe_allow_html=True)
+st.markdown('<h1 class="gradient-text" style="margin-bottom: 0.2rem;">🛡️ Credit Card Fraud Intelligence Platform</h1>', unsafe_allow_html=True)
+st.markdown('<p style="font-size: 1.02rem; color: #aaaaaa; font-family: \'Sora\', sans-serif; margin-bottom: 1.5rem;">Production-Grade Stacking Ensemble, Neural Reconstruction Anomaly Engine & Cost-Benefit Optimizer</p>', unsafe_allow_html=True)
 st.write("")
 
 # Load model predictor
@@ -642,19 +679,21 @@ with tab_performance:
                     -0.00001 * time_input
                 ]
                 df_shap = pd.DataFrame({"Feature": shap_features, "Value": shap_values})
-                df_shap = df_shap.sort_values(by="Value", key=abs, ascending=True)
+                df_shap["abs_val"] = df_shap["Value"].abs()
+                df_shap = df_shap.sort_values(by="abs_val", ascending=True)
+                
+                # Define colors: Purple (#a855f7) for positive (increases fraud risk), Cyan (#00d4ff) for negative (decreases risk)
+                df_shap["Color"] = df_shap["Value"].apply(lambda x: "#a855f7" if x >= 0 else "#00d4ff")
                 
                 fig_shap = px.bar(
                     df_shap, x="Value", y="Feature",
                     orientation="h",
-                    title="Estimated Local Attribution Impact",
-                    color="Value",
-                    color_continuous_scale=["#a855f7", "#00d4ff"]
+                    color="Color",
+                    color_discrete_map="identity"
                 )
                 fig_shap.update_layout(
                     height=380,
-                    margin=dict(l=60, r=20, t=40, b=40),
-                    coloraxis_showscale=False,
+                    margin=dict(l=60, r=20, t=20, b=40),
                     **PLOTLY_LAYOUT_THEME
                 )
                 fig_shap.update_xaxes(**PLOTLY_AXIS_THEME)
@@ -765,22 +804,44 @@ with tab_performance:
                         explainer = shap.TreeExplainer(lgb_model)
                         
                         # Compute SHAP
-                        shap_values = explainer(X_after_ae)
+                        shap_explanation = explainer(X_after_ae)
                         
-                        fig, ax = plt.subplots(figsize=(10, 4.45))
-                        shap.plots.waterfall(shap_values[0], max_display=10, show=False)
-                        fig.patch.set_facecolor('#050505')
-                        ax.set_facecolor('#050505')
-                        ax.tick_params(colors='white')
-                        ax.xaxis.label.set_color('white')
-                        ax.yaxis.label.set_color('white')
-                        for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] +
-                                     ax.get_xticklabels() + ax.get_yticklabels()):
-                            item.set_fontsize(10)
+                        # Extract raw SHAP values from Explanation object
+                        vals = shap_explanation.values
+                        if len(vals.shape) == 3:
+                            local_shap = vals[0, :, 1]
+                        elif len(vals.shape) == 2:
+                            local_shap = vals[0, :]
+                        else:
+                            local_shap = vals
                             
-                        plt.tight_layout()
-                        st.pyplot(fig)
-                        plt.close(fig)
+                        df_shap = pd.DataFrame({
+                            "Feature": X_after_ae.columns,
+                            "SHAP Value": local_shap
+                        })
+                        
+                        # Sort by absolute SHAP value to get the top 10 impact drivers
+                        df_shap["abs_val"] = df_shap["SHAP Value"].abs()
+                        df_shap = df_shap.sort_values(by="abs_val", ascending=False).head(10)
+                        df_shap = df_shap.sort_values(by="SHAP Value", ascending=True)
+                        
+                        # Define colors: Purple (#a855f7) for positive (increases fraud risk), Cyan (#00d4ff) for negative (decreases risk)
+                        df_shap["Color"] = df_shap["SHAP Value"].apply(lambda x: "#a855f7" if x >= 0 else "#00d4ff")
+                        
+                        fig_shap = px.bar(
+                            df_shap, x="SHAP Value", y="Feature",
+                            orientation="h",
+                            color="Color",
+                            color_discrete_map="identity"
+                        )
+                        fig_shap.update_layout(
+                            height=380,
+                            margin=dict(l=60, r=20, t=20, b=40),
+                            **PLOTLY_LAYOUT_THEME
+                        )
+                        fig_shap.update_xaxes(**PLOTLY_AXIS_THEME)
+                        fig_shap.update_yaxes(**PLOTLY_AXIS_THEME)
+                        st.plotly_chart(fig_shap, use_container_width=True)
                     except Exception as e:
                         st.error(f"Could not compute SHAP: {e}")
                     
