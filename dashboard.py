@@ -29,7 +29,7 @@ PLOTLY_AXIS_THEME = {
     "gridcolor": "rgba(255, 255, 255, 0.05)",
     "zerolinecolor": "rgba(255, 255, 255, 0.1)",
     "tickfont": {"size": 10},
-    "titlefont": {"size": 11, "family": "Sora, sans-serif"}
+    "title_font": {"size": 11, "family": "Sora, sans-serif"}
 }
 
 # Page configuration for modern premium look
