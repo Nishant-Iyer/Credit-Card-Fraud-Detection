@@ -117,7 +117,7 @@ st.markdown("""
         border-bottom-color: #ff4b4b !important;
     }
 </style>
-""", unsafe_allowed_html=True)
+""", unsafe_allow_html=True)
 
 # Title banner
 st.title("🛡️ Credit Card Fraud Intelligence & Explainability Platform")
@@ -243,28 +243,28 @@ with tab_performance:
             <div class="metric-title">Optimal Decision Threshold</div>
             <div class="metric-value">{tuned_threshold:.4f}</div>
         </div>
-        """, unsafe_allowed_html=True)
+        """, unsafe_allow_html=True)
     with c2:
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-title">Do Nothing Cost (Fraud Loss)</div>
             <div class="metric-value">${do_nothing:,.2f}</div>
         </div>
-        """, unsafe_allowed_html=True)
+        """, unsafe_allow_html=True)
     with c3:
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-title">Total Calibrated Cost</div>
             <div class="metric-value">${tuned_cost:,.2f}</div>
         </div>
-        """, unsafe_allowed_html=True)
+        """, unsafe_allow_html=True)
     with c4:
         st.markdown(f"""
         <div class="metric-card">
             <div class="metric-title">Business Net Savings</div>
             <div class="metric-value savings">${tuned_savings:,.2f}</div>
         </div>
-        """, unsafe_allowed_html=True)
+        """, unsafe_allow_html=True)
 
     st.write("---")
     
