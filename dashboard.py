@@ -19,22 +19,17 @@ plt.style.use('dark_background')
 sns.set_theme(style="dark", palette="muted")
 
 # Unified theme configuration matching the portfolio website
-PORTFOLIO_THEME = {
+PLOTLY_LAYOUT_THEME = {
     "paper_bgcolor": "rgba(0,0,0,0)",
     "plot_bgcolor": "#0a0a0a",
-    "font": {"color": "white", "family": "DM Sans, sans-serif"},
-    "xaxis": {
-        "gridcolor": "rgba(255, 255, 255, 0.05)",
-        "zerolinecolor": "rgba(255, 255, 255, 0.1)",
-        "tickfont": {"size": 10},
-        "titlefont": {"size": 11, "family": "Sora, sans-serif"}
-    },
-    "yaxis": {
-        "gridcolor": "rgba(255, 255, 255, 0.05)",
-        "zerolinecolor": "rgba(255, 255, 255, 0.1)",
-        "tickfont": {"size": 10},
-        "titlefont": {"size": 11, "family": "Sora, sans-serif"}
-    }
+    "font": {"color": "white", "family": "DM Sans, sans-serif"}
+}
+
+PLOTLY_AXIS_THEME = {
+    "gridcolor": "rgba(255, 255, 255, 0.05)",
+    "zerolinecolor": "rgba(255, 255, 255, 0.1)",
+    "tickfont": {"size": 10},
+    "titlefont": {"size": 11, "family": "Sora, sans-serif"}
 }
 
 # Page configuration for modern premium look
@@ -70,15 +65,17 @@ st.markdown("""
         background: rgba(10, 10, 10, 0.85);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(0, 212, 255, 0.15);
-        border-radius: 12px;
-        padding: 20px;
+        border-radius: 16px;
+        padding: 24px 16px;
         margin-bottom: 15px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+        text-align: center;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        height: 120px;
+        justify-content: center;
+        align-items: center;
+        min-height: 140px;
     }
     
     .metric-card:hover {
@@ -92,16 +89,17 @@ st.markdown("""
         color: #cccccc;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
         font-family: 'Sora', sans-serif;
         font-weight: 500;
     }
     
     .metric-value {
-        font-size: 2rem;
+        font-size: 2.2rem;
         font-weight: 700;
         color: #ffffff;
         font-family: 'Sora', sans-serif;
+        line-height: 1.1;
     }
     
     .metric-value.savings {
@@ -109,7 +107,7 @@ st.markdown("""
     }
     
     .metric-value.loss {
-        color: #EF4444;
+        color: #a855f7;
     }
     
     .stButton>button {
@@ -336,10 +334,12 @@ with tab_performance:
                 fig_cost.update_layout(
                     height=450,
                     margin=dict(l=50, r=30, t=30, b=50),
-                    xaxis=dict(title="Decision Threshold"),
-                    yaxis=dict(title="Total Business Cost ($)"),
-                    **PORTFOLIO_THEME
+                    xaxis_title="Decision Threshold",
+                    yaxis_title="Total Business Cost ($)",
+                    **PLOTLY_LAYOUT_THEME
                 )
+                fig_cost.update_xaxes(**PLOTLY_AXIS_THEME)
+                fig_cost.update_yaxes(**PLOTLY_AXIS_THEME)
                 st.plotly_chart(fig_cost, use_container_width=True)
         else:
             with sub_tab_cost:
@@ -375,8 +375,10 @@ with tab_performance:
                 fig_pr.update_layout(
                     height=450,
                     margin=dict(l=50, r=30, t=30, b=50),
-                    **PORTFOLIO_THEME
+                    **PLOTLY_LAYOUT_THEME
                 )
+                fig_pr.update_xaxes(**PLOTLY_AXIS_THEME)
+                fig_pr.update_yaxes(**PLOTLY_AXIS_THEME)
                 st.plotly_chart(fig_pr, use_container_width=True)
                 
             with sub_tab_roc:
@@ -401,8 +403,10 @@ with tab_performance:
                 fig_roc.update_layout(
                     height=450,
                     margin=dict(l=50, r=30, t=30, b=50),
-                    **PORTFOLIO_THEME
+                    **PLOTLY_LAYOUT_THEME
                 )
+                fig_roc.update_xaxes(**PLOTLY_AXIS_THEME)
+                fig_roc.update_yaxes(**PLOTLY_AXIS_THEME)
                 st.plotly_chart(fig_roc, use_container_width=True)
         else:
             sub_tab_pr, sub_tab_roc = st.tabs(["Precision-Recall Curve", "ROC Curve"])
@@ -624,8 +628,10 @@ with tab_sandbox:
                     height=400,
                     margin=dict(l=60, r=20, t=10, b=40),
                     coloraxis_showscale=False,
-                    **PORTFOLIO_THEME
+                    **PLOTLY_LAYOUT_THEME
                 )
+                fig_ae.update_xaxes(**PLOTLY_AXIS_THEME)
+                fig_ae.update_yaxes(**PLOTLY_AXIS_THEME)
                 st.plotly_chart(fig_ae, use_container_width=True)
 
 # ==================== Tab 3: Batch Prediction Service ====================
@@ -724,8 +730,10 @@ with tab_batch:
                             fig_hist.update_layout(
                                 height=380,
                                 margin=dict(l=20, r=20, t=40, b=20),
-                                **PORTFOLIO_THEME
+                                **PLOTLY_LAYOUT_THEME
                             )
+                            fig_hist.update_xaxes(**PLOTLY_AXIS_THEME)
+                            fig_hist.update_yaxes(**PLOTLY_AXIS_THEME)
                             st.plotly_chart(fig_hist, use_container_width=True)
                             
                         # Download button
