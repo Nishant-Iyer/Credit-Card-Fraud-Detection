@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  mlflow-server:
+    image: python:3.11-slim
+    container_name: mlflow-server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/app/mlruns
+      - ./mlflow.db:/app/mlflow.db
+    working_dir: /app
+    entrypoint: >
+      sh -c "pip install mlflow && mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow.db --default-artifact-root /app/mlruns"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraud-api
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_PATH=/app/artifacts/full_pipeline.joblib
+      - METADATA_PATH=/app/artifacts/metadata.json
+    volumes:
+      - ./artifacts:/app/artifacts
+      - ./data:/app/data
+    depends_on:
+      - mlflow-server
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fraud-dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./artifacts:/app/artifacts
+      - ./data:/app/data
+    command: ["streamlit", "run", "dashboard.py", "--server.address", "0.0.0.0"]
+    depends_on:
+      - api

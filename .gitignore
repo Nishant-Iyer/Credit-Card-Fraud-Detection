@@ -1,0 +1,28 @@
+# Python environment
+.venv/
+venv/
+env/
+*.pyc
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# IDE files
+.vscode/
+.idea/
+.DS_Store
+
+# Heavy raw datasets (Exclude to avoid GitHub file size warnings)
+data/creditcard.csv
+data/creditcard.csv.zip
+data/train.csv
+
+# MLflow experiments
+mlruns/
+mlflow.db
+
+# Explicitly allow artifacts and test data required for the Streamlit Dashboard
+!data/test.csv
+!artifacts/full_pipeline.joblib
+!artifacts/autoencoder.pt
+!artifacts/metadata.json

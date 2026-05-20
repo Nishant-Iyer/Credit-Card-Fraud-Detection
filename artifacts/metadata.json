@@ -1,0 +1,22 @@
+{
+    "optimal_threshold": 0.11634673366834171,
+    "metrics": {
+        "auprc": 0.8582836372244694,
+        "roc_auc": 0.9765286742158878,
+        "precision": 0.6615384615384615,
+        "recall": 0.8775510204081632,
+        "f1_score": 0.7543859649122807,
+        "confusion_matrix": {
+            "tn": 56820,
+            "fp": 44,
+            "fn": 12,
+            "tp": 86
+        }
+    },
+    "business_metrics": {
+        "min_business_cost": 2573.7,
+        "do_nothing_cost": 10644.93,
+        "review_all_cost": 284810.0,
+        "savings_vs_nothing": 8071.2300000000005
+    }
+}

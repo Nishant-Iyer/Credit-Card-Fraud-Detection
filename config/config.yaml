@@ -1,0 +1,52 @@
+# Credit Card Fraud Detection Configuration
+
+data:
+  openml_id: 1597 # OpenML dataset ID for credit card fraud
+  data_dir: "data"
+  raw_file: "data/creditcard.csv"
+  train_file: "data/train.csv"
+  test_file: "data/test.csv"
+  target_col: "Class"
+  test_size: 0.2
+  random_state: 42
+
+features:
+  cyclical_time_period: 86400 # 24 hours in seconds
+  scale_cols:
+    - "Amount"
+  drop_cols:
+    - "Time"
+
+models:
+  autoencoder:
+    input_dim: 29 # 28 PCA features + scaled Amount + Cyclical sin/cos - Class = 30 features
+    encoding_dim: 16
+    epochs: 15
+    batch_size: 256
+    learning_rate: 0.001
+    model_path: "artifacts/autoencoder.pt"
+  
+  xgboost:
+    n_estimators: 200
+    max_depth: 6
+    learning_rate: 0.1
+    subsample: 0.8
+    colsample_bytree: 0.8
+    scale_pos_weight: 1.0 # Will be handled by SMOTE or subclass weights
+  
+  lightgbm:
+    n_estimators: 200
+    max_depth: 6
+    num_leaves: 31
+    learning_rate: 0.1
+    subsample: 0.8
+    colsample_bytree: 0.8
+
+business_costs:
+  manual_review_cost: 5.0 # Cost to manually review a transaction
+  fraud_cost_factor: 1.0 # 100% of transaction amount is lost on undetected fraud
+
+mlflow:
+  tracking_uri: "http://localhost:5000"
+  experiment_name: "credit-card-fraud-detection"
+  run_name: "production_stacking_ensemble"
