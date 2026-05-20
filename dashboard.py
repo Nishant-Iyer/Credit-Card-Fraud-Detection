@@ -46,30 +46,45 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Sora:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
     
     html, body, [class*="css"], .stApp {
-        background-color: #050505;
+        background: radial-gradient(circle at 50% 50%, #110926 0%, #050505 100%) !important;
+        background-attachment: fixed !important;
         color: #ffffff;
         font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     
     .main {
-        background-color: #050505;
+        background-color: transparent !important;
         color: #ffffff;
     }
     
     h1, h2, h3, h4, h5, h6, [class*="Header"] {
         font-family: 'Sora', 'Plus Jakarta Sans', sans-serif !important;
         font-weight: 600;
+        letter-spacing: -0.02em;
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #00d4ff 0%, #a855f7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+    
+    [data-testid="stSidebar"] {
+        background-color: rgba(8, 8, 8, 0.95) !important;
+        backdrop-filter: blur(15px) !important;
+        border-right: 1px solid rgba(0, 212, 255, 0.1) !important;
     }
     
     .metric-card {
-        background: rgba(10, 10, 10, 0.85);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(0, 212, 255, 0.15);
+        background: rgba(10, 10, 10, 0.8) !important;
+        backdrop-filter: blur(25px) !important;
+        border: 1px solid rgba(0, 212, 255, 0.15) !important;
         border-radius: 16px;
         padding: 24px 16px;
         margin-bottom: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;
         text-align: center;
         display: flex;
         flex-direction: column;
@@ -79,16 +94,16 @@ st.markdown("""
     }
     
     .metric-card:hover {
-        transform: translateY(-2px);
-        border-color: rgba(168, 85, 247, 0.4);
-        box-shadow: 0 8px 25px rgba(168, 85, 247, 0.2);
+        transform: translateY(-4px);
+        border-color: rgba(168, 85, 247, 0.5) !important;
+        box-shadow: 0 12px 30px rgba(168, 85, 247, 0.25);
     }
     
     .metric-title {
         font-size: 0.85rem;
-        color: #cccccc;
+        color: #aaaaaa;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.1em;
         margin-bottom: 8px;
         font-family: 'Sora', sans-serif;
         font-weight: 500;
@@ -104,31 +119,34 @@ st.markdown("""
     
     .metric-value.savings {
         color: #00d4ff;
+        text-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
     }
     
     .metric-value.loss {
         color: #a855f7;
+        text-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
     }
     
     .stButton>button {
         background: linear-gradient(135deg, #00d4ff 0%, #a855f7 100%) !important;
         color: #050505 !important;
-        border-radius: 12px;
-        font-weight: 700;
-        border: none;
-        padding: 10px 24px;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        border: none !important;
+        padding: 12px 28px !important;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2) !important;
     }
     
     .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4) !important;
         color: #050505 !important;
     }
     
     .stTabs [data-baseweb="tab-list"] {
         gap: 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
     
     .stTabs [data-baseweb="tab"] {
@@ -136,22 +154,73 @@ st.markdown("""
         white-space: pre-wrap;
         background-color: transparent;
         border-radius: 4px;
-        color: #cccccc;
-        font-size: 1.1rem;
+        color: #888888;
+        font-size: 1.05rem;
         font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        color: #ffffff;
     }
     
     .stTabs [aria-selected="true"] {
         color: #00d4ff !important;
         border-bottom-color: #00d4ff !important;
     }
+    
+    /* Streamlit slider customization */
+    .stSlider [data-baseweb="slider"] [role="slider"] {
+        background-color: #00d4ff !important;
+        border: 2px solid #a855f7 !important;
+        width: 18px !important;
+        height: 18px !important;
+    }
+    .stSlider [data-baseweb="slider"] > div > div > div {
+        background: linear-gradient(90deg, #00d4ff, #a855f7) !important;
+    }
+    
+    /* Custom style for numbers inputs, selectors, and dropdowns */
+    div[data-baseweb="input"] {
+        background-color: rgba(10, 10, 10, 0.8) !important;
+        border: 1px solid rgba(0, 212, 255, 0.15) !important;
+        border-radius: 10px !important;
+    }
+    div[data-baseweb="input"]:focus-within {
+        border-color: #a855f7 !important;
+    }
+    div[data-baseweb="select"] {
+        background-color: rgba(10, 10, 10, 0.8) !important;
+        border: 1px solid rgba(0, 212, 255, 0.15) !important;
+        border-radius: 10px !important;
+    }
+    
+    /* Glassmorphic file uploader */
+    section[data-testid="stFileUploadDropzone"] {
+        background-color: rgba(10, 10, 10, 0.6) !important;
+        border: 2px dashed rgba(0, 212, 255, 0.25) !important;
+        border-radius: 16px !important;
+        padding: 2rem !important;
+    }
+    section[data-testid="stFileUploadDropzone"]:hover {
+        border-color: #a855f7 !important;
+        background-color: rgba(168, 85, 247, 0.05) !important;
+    }
+    
+    /* Expander visual cleanups */
+    div[data-testid="stExpander"] {
+        background-color: rgba(10, 10, 10, 0.5) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 # Title banner
-st.title("🛡️ Credit Card Fraud Intelligence & Explainability Platform")
-st.markdown("### Production-Grade Stacking Ensemble, Neural Reconstruction Anomaly Engine & Cost-Benefit Optimizer")
-st.write("---")
+st.markdown('<h1 class="gradient-text" style="font-size: 2.5rem; margin-bottom: 0.2rem;">🛡️ Credit Card Fraud Intelligence Platform</h1>', unsafe_allow_html=True)
+st.markdown('<p style="font-size: 1.15rem; color: #aaaaaa; font-family: \'Sora\', sans-serif; margin-bottom: 1.5rem;">Production-Grade Stacking Ensemble, Neural Reconstruction Anomaly Engine & Cost-Benefit Optimizer</p>', unsafe_allow_html=True)
+st.write("")
 
 # Load model predictor
 @st.cache_resource
@@ -208,8 +277,13 @@ else:
     business_metrics = {"min_business_cost": 2573.7, "do_nothing_cost": 10644.93, "savings_vs_nothing": 8071.23}
 
 # Sidebar Configurations
-st.sidebar.image("https://img.icons8.com/nolan/256/card-security.png", width=100)
-st.sidebar.subheader("💼 Cost-Benefit Calibration")
+st.sidebar.markdown("""
+<div style="text-align: center; margin-bottom: 20px; padding-top: 10px;">
+    <img src="https://img.icons8.com/nolan/256/card-security.png" width="90" style="filter: drop-shadow(0 4px 10px rgba(0, 212, 255, 0.3)); margin-bottom: 10px;">
+    <h3 style="font-family: 'Sora', sans-serif; margin-top: 10px; color: #ffffff; font-size: 1.30rem;">Recalibrator Panel</h3>
+    <p style="font-size: 0.82rem; color: #888888; font-family: 'DM Sans', sans-serif; line-height: 1.4; padding: 0 10px;">Modify business risk factors dynamically to recalibrate decision thresholds.</p>
+</div>
+""", unsafe_allow_html=True)
 review_cost = st.sidebar.slider("Manual Compliance Review Cost ($)", 0.50, 50.00, 5.00, 0.50)
 fraud_factor = st.sidebar.slider("Fraud Loss Factor (Percentage of Amt)", 0.1, 2.0, 1.0, 0.1)
 
@@ -413,50 +487,62 @@ with tab_performance:
             with sub_tab_pr:
                 st.info("Demo Mode: Run training to view interactive curves.")
 
-# ==================== Tab 2: Model Sandbox & Explainability (SHAP) ====================
-with tab_sandbox:
+# ==================== Tab 2: Model Sandbox & Explainability with tab_sandbox:
     st.markdown("## 🧪 Live Simulation Sandbox & Model Explanations")
     st.markdown("Score individual transactions, audit their neural reconstruction anomaly, and inspect SHAP attributions.")
     
-    # Preset scenarios
-    scenario = st.selectbox("Select Scenario Template", [
-        "Custom Manual Inputs",
-        "Legitimate Purchase",
-        "High-Value Anomaly (Medium Risk)",
-        "Confirmed Fraud Pattern (High Risk)"
-    ])
-    
-    # Base values
-    time_val = 3600.0
-    amount_val = 50.00
-    v_vals = {f"V{i}": 0.0 for i in range(1, 29)}
-    
-    if scenario == "Legitimate Purchase":
-        time_val = 4500.0
-        amount_val = 25.50
-        for i in range(1, 29):
-            v_vals[f"V{i}"] = np.random.normal(0.0, 0.15)
-    elif scenario == "High-Value Anomaly (Medium Risk)":
-        time_val = 14200.0
-        amount_val = 7500.00
-        for i in range(1, 29):
-            v_vals[f"V{i}"] = np.random.normal(0.0, 0.6)
-    elif scenario == "Confirmed Fraud Pattern (High Risk)":
-        time_val = 406.0
-        amount_val = 239.00
-        # Highly negative V14, V17, V12 are classic fraud features in this dataset
-        v_vals["V14"] = -7.3
-        v_vals["V17"] = -6.1
-        v_vals["V12"] = -5.8
-        v_vals["V10"] = -4.5
-        v_vals["V4"] = 4.2
-        v_vals["V11"] = 3.8
+    # Initialize sandbox inputs state if not present
+    if "time_input" not in st.session_state:
+        st.session_state.time_input = 3600.0
+    if "amount_input" not in st.session_state:
+        st.session_state.amount_input = 50.00
+    for i in range(1, 29):
+        if f"v{i}_input" not in st.session_state:
+            st.session_state[f"v{i}_input"] = 0.0
+
+    # Handler for template changes
+    def apply_scenario():
+        template = st.session_state.scenario_template
+        if template == "Legitimate Purchase":
+            st.session_state.time_input = 4500.0
+            st.session_state.amount_input = 25.50
+            for i in range(1, 29):
+                st.session_state[f"v{i}_input"] = round(np.random.normal(0.0, 0.15), 4)
+        elif template == "High-Value Anomaly (Medium Risk)":
+            st.session_state.time_input = 14200.0
+            st.session_state.amount_input = 7500.00
+            for i in range(1, 29):
+                st.session_state[f"v{i}_input"] = round(np.random.normal(0.0, 0.6), 4)
+        elif template == "Confirmed Fraud Pattern (High Risk)":
+            st.session_state.time_input = 406.0
+            st.session_state.amount_input = 239.00
+            for i in range(1, 29):
+                st.session_state[f"v{i}_input"] = 0.0
+            st.session_state.v14_input = -7.3
+            st.session_state.v17_input = -6.1
+            st.session_state.v12_input = -5.8
+            st.session_state.v10_input = -4.5
+            st.session_state.v4_input = 4.2
+            st.session_state.v11_input = 3.8
+
+    # Scenario selector with template callbacks
+    scenario = st.selectbox(
+        "Select Scenario Template", 
+        [
+            "Custom Manual Inputs",
+            "Legitimate Purchase",
+            "High-Value Anomaly (Medium Risk)",
+            "Confirmed Fraud Pattern (High Risk)"
+        ],
+        key="scenario_template",
+        on_change=apply_scenario
+    )
 
     st.markdown("### Transaction Details")
     s_col1, s_col2 = st.columns(2)
     with s_col1:
-        time_input = st.number_input("Time (Seconds elapsed)", 0.0, 172800.0, float(time_val))
-        amount_input = st.number_input("Amount ($)", 0.0, 100000.0, float(amount_val))
+        time_input = st.number_input("Time (Seconds elapsed)", 0.0, 172800.0, key="time_input")
+        amount_input = st.number_input("Amount ($)", 0.0, 100000.0, key="amount_input")
     with s_col2:
         st.info("💡 Adjust PCA features V1-V28 below. In production, these represent encrypted transaction embeddings.")
         
@@ -466,42 +552,131 @@ with tab_sandbox:
         for i in range(1, 29):
             col_idx = (i - 1) % 4
             with v_cols[col_idx]:
-                v_inputs[f"V{i}"] = st.number_input(f"V{i}", -50.0, 50.0, float(v_vals[f"V{i}"]))
+                v_inputs[f"V{i}"] = st.number_input(f"V{i}", -50.0, 50.0, key=f"v{i}_input")
 
     # Aggregate inputs
     tx_payload = {"Time": time_input, "Amount": amount_input}
     for i in range(1, 29):
-        tx_payload[f"V{i}"] = v_inputs[f"V{i}"] if scenario == "Custom Manual Inputs" else v_vals[f"V{i}"]
+        tx_payload[f"V{i}"] = v_inputs[f"V{i}"]
         
     # Run prediction
     st.write("---")
     st.markdown("### Prediction & Explainability Results")
     
+    # Calculate values responsive to inputs
+    v14_val = tx_payload["V14"]
+    v17_val = tx_payload["V17"]
+    v12_val = tx_payload["V12"]
+    
+    # Sigmoid function based on critical features
+    raw_score = -3.5 - 0.7 * v14_val - 0.6 * v17_val - 0.5 * v12_val + 0.00015 * amount_input
+    prob = float(np.clip(1.0 / (1.0 + np.exp(-raw_score)), 0.0001, 0.9999))
+    recon_err = float(np.clip(0.3 + 0.3 * (v14_val**2 + v17_val**2 + v12_val**2) + 0.00001 * amount_input**2, 0.05, 100.0))
+    is_fraud = prob >= tuned_threshold
+
     if predictor is None:
-        st.warning("⚠️ No trained model found. Displaying mock predictions and explanations.")
-        mock_probs = {
-            "Custom Manual Inputs": 0.05,
-            "Legitimate Purchase": 0.002,
-            "High-Value Anomaly (Medium Risk)": 0.28,
-            "Confirmed Fraud Pattern (High Risk)": 0.985
-        }
-        prob = mock_probs[scenario]
-        recon_err = 0.5 if scenario == "Legitimate Purchase" else (2.8 if scenario == "High-Value Anomaly (Medium Risk)" else 15.3)
-        is_fraud = prob >= tuned_threshold
+        st.warning("⚠️ No trained model found. Displaying real-time simulated predictions based on manual inputs.")
         
-        # Display Mock Gauge
-        fig_g = go.Figure(go.Indicator(
-            mode = "gauge+number",
-            value = prob * 100,
-            title = {'text': "Fraud Probability (%)"},
-            gauge = {
-                'axis': {'range': [0, 100]},
-                'bar': {'color': "#EF4444" if is_fraud else "#10B981"},
-                'steps': [{'range': [0, tuned_threshold*100], 'color': "rgba(16, 185, 129, 0.15)"}]
-            }
-        ))
-        fig_g.update_layout(paper_bgcolor='rgba(0,0,0,0)', font=dict(color="white"))
-        st.plotly_chart(fig_g, use_container_width=True)
+        res_col_l, res_col_r = st.columns(2)
+        with res_col_l:
+            fig_g = go.Figure(go.Indicator(
+                mode = "gauge+number",
+                value = prob * 100,
+                title = {'text': "Fraud Probability (%)", 'font': {'size': 18, 'family': 'Sora'}},
+                gauge = {
+                    'axis': {'range': [0, 100], 'tickcolor': "white"},
+                    'bar': {'color': "#a855f7" if is_fraud else "#00d4ff"},
+                    'bgcolor': "#0a0a0a",
+                    'borderwidth': 1.5,
+                    'bordercolor': "rgba(255, 255, 255, 0.1)",
+                    'steps': [
+                        {'range': [0, tuned_threshold*100], 'color': "rgba(0, 212, 255, 0.1)"},
+                        {'range': [tuned_threshold*100, 100], 'color': "rgba(168, 85, 247, 0.1)"}
+                    ]
+                }
+            ))
+            fig_g.update_layout(paper_bgcolor='rgba(0,0,0,0)', font=dict(color="white", family="Sora, sans-serif"), height=280)
+            st.plotly_chart(fig_g, use_container_width=True)
+            
+        with res_col_r:
+            st.write("### 🚨 System Status & Verdict")
+            if is_fraud:
+                st.error(f"**DECLINE TRANSACTION**")
+                st.write(f"The transaction score is above the cost-optimal decision threshold of **{tuned_threshold:.4f}**.")
+            else:
+                st.success(f"**APPROVE TRANSACTION**")
+                st.write(f"The transaction score is within acceptable bounds below the decision threshold of **{tuned_threshold:.4f}**.")
+                
+            st.write(f"*   **Simulated Score:** `{prob:.6f}`")
+            st.write(f"*   **Simulated Anomaly Score:** `{recon_err:.6f}`")
+            
+        st.write("---")
+        exp_col_l, exp_col_r = st.columns(2)
+        
+        with exp_col_l:
+            st.subheader("🔍 Feature Attribution (Simulated SHAP)")
+            sub_tab_shap = st.tabs(["SHAP Waterfall Explanation"])[0]
+            with sub_tab_shap:
+                shap_features = ["Amount", "V14", "V17", "V12", "V10", "V4", "V11", "Time"]
+                shap_values = [
+                    0.00015 * amount_input,
+                    -0.7 * v14_val,
+                    -0.6 * v17_val,
+                    -0.5 * v12_val,
+                    -0.2 * tx_payload.get("V10", 0.0),
+                    0.15 * tx_payload.get("V4", 0.0),
+                    0.1 * tx_payload.get("V11", 0.0),
+                    -0.00001 * time_input
+                ]
+                df_shap = pd.DataFrame({"Feature": shap_features, "Value": shap_values})
+                df_shap = df_shap.sort_values(by="Value", key=abs, ascending=True)
+                
+                fig_shap = px.bar(
+                    df_shap, x="Value", y="Feature",
+                    orientation="h",
+                    title="Estimated Local Attribution Impact",
+                    color="Value",
+                    color_continuous_scale=["#a855f7", "#00d4ff"]
+                )
+                fig_shap.update_layout(
+                    height=380,
+                    margin=dict(l=60, r=20, t=40, b=40),
+                    coloraxis_showscale=False,
+                    **PLOTLY_LAYOUT_THEME
+                )
+                fig_shap.update_xaxes(**PLOTLY_AXIS_THEME)
+                fig_shap.update_yaxes(**PLOTLY_AXIS_THEME)
+                st.plotly_chart(fig_shap, use_container_width=True)
+                
+        with exp_col_r:
+            st.subheader("🧠 Neural Reconstruction Error")
+            sub_tab_ae = st.tabs(["Anomaly Driver Decomposition"])[0]
+            with sub_tab_ae:
+                features = ["V14", "V17", "V12", "V10", "V4", "V11", "V1", "V2", "Amount", "Time"]
+                errors = [
+                    v14_val**2, v17_val**2, v12_val**2,
+                    tx_payload.get("V10", 0.0)**2, tx_payload.get("V4", 0.0)**2,
+                    tx_payload.get("V11", 0.0)**2, tx_payload.get("V1", 0.0)**2,
+                    tx_payload.get("V2", 0.0)**2, (0.001 * amount_input)**2,
+                    (0.0001 * time_input)**2
+                ]
+                df_ae = pd.DataFrame({"Feature": features, "Squared Error": errors}).sort_values(by="Squared Error", ascending=True)
+                
+                fig_ae = px.bar(
+                    df_ae, x="Squared Error", y="Feature",
+                    orientation='h',
+                    color="Squared Error",
+                    color_continuous_scale=["#00d4ff", "#a855f7"]
+                )
+                fig_ae.update_layout(
+                    height=380,
+                    margin=dict(l=60, r=20, t=40, b=40),
+                    coloraxis_showscale=False,
+                    **PLOTLY_LAYOUT_THEME
+                )
+                fig_ae.update_xaxes(**PLOTLY_AXIS_THEME)
+                fig_ae.update_yaxes(**PLOTLY_AXIS_THEME)
+                st.plotly_chart(fig_ae, use_container_width=True)
     else:
         # Step-by-step feature preprocessing to feed SHAP and Autoencoder reconstruction analysis
         cols_order = ["Time"] + [f"V{i}" for i in range(1, 29)] + ["Amount"]
@@ -580,7 +755,6 @@ with tab_sandbox:
                         shap_values = explainer(X_after_ae)
                         
                         fig, ax = plt.subplots(figsize=(10, 4.45))
-                        # Adjust parameters for beautiful display
                         shap.plots.waterfall(shap_values[0], max_display=10, show=False)
                         fig.patch.set_facecolor('#050505')
                         ax.set_facecolor('#050505')
