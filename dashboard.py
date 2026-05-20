@@ -214,6 +214,19 @@ st.markdown("""
         border-radius: 12px !important;
         box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
     }
+    
+    /* Fix side-by-side column header alignment on text wrap */
+    .column-header {
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        font-family: 'Sora', sans-serif !important;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 0.8rem;
+        line-height: 1.35;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -374,7 +387,7 @@ with tab_performance:
     plot_col_left, plot_col_right = st.columns(2)
     
     with plot_col_left:
-        st.subheader("💼 Business Cost Curve")
+        st.markdown('<div class="column-header">💼 Business Cost Curve</div>', unsafe_allow_html=True)
         sub_tab_cost = st.tabs(["Cost Calibration Curve"])[0]
         
         if test_preds is not None:
@@ -420,7 +433,7 @@ with tab_performance:
                 st.info("Demo Mode: Run training to generate live Business Cost Curve.")
             
     with plot_col_right:
-        st.subheader("📈 Precision-Recall & ROC Curves")
+        st.markdown('<div class="column-header">📈 Precision-Recall & ROC Curves</div>', unsafe_allow_html=True)
         if test_preds is not None:
             sub_tab_pr, sub_tab_roc = st.tabs([
                 f"Precision-Recall (AUPRC: {metrics['auprc']:.4f})", 
@@ -614,7 +627,7 @@ with tab_performance:
         exp_col_l, exp_col_r = st.columns(2)
         
         with exp_col_l:
-            st.subheader("🔍 Feature Attribution (Simulated SHAP)")
+            st.markdown('<div class="column-header">🔍 Feature Attribution (Simulated SHAP)</div>', unsafe_allow_html=True)
             sub_tab_shap = st.tabs(["SHAP Waterfall Explanation"])[0]
             with sub_tab_shap:
                 shap_features = ["Amount", "V14", "V17", "V12", "V10", "V4", "V11", "Time"]
@@ -649,7 +662,7 @@ with tab_performance:
                 st.plotly_chart(fig_shap, use_container_width=True)
                 
         with exp_col_r:
-            st.subheader("🧠 Neural Reconstruction Error")
+            st.markdown('<div class="column-header">🧠 Neural Reconstruction Error</div>', unsafe_allow_html=True)
             sub_tab_ae = st.tabs(["Anomaly Driver Decomposition"])[0]
             with sub_tab_ae:
                 features = ["V14", "V17", "V12", "V10", "V4", "V11", "V1", "V2", "Amount", "Time"]
@@ -742,7 +755,7 @@ with tab_performance:
         exp_col_l, exp_col_r = st.columns(2)
         
         with exp_col_l:
-            st.subheader("🔍 Feature Attribution (Local SHAP)")
+            st.markdown('<div class="column-header">🔍 Feature Attribution (Local SHAP)</div>', unsafe_allow_html=True)
             sub_tab_shap = st.tabs(["SHAP Waterfall Explanation"])[0]
             
             with sub_tab_shap:
@@ -772,7 +785,7 @@ with tab_performance:
                         st.error(f"Could not compute SHAP: {e}")
                     
         with exp_col_r:
-            st.subheader("🧠 Neural Reconstruction Error")
+            st.markdown('<div class="column-header">🧠 Neural Reconstruction Error</div>', unsafe_allow_html=True)
             sub_tab_ae = st.tabs(["Anomaly Driver Decomposition"])[0]
             
             with sub_tab_ae:
