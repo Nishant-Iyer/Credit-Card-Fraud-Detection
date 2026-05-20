@@ -18,6 +18,25 @@ from src.models.evaluator import optimize_business_threshold
 plt.style.use('dark_background')
 sns.set_theme(style="dark", palette="muted")
 
+# Unified theme configuration matching the portfolio website
+PORTFOLIO_THEME = {
+    "paper_bgcolor": "rgba(0,0,0,0)",
+    "plot_bgcolor": "#0a0a0a",
+    "font": {"color": "white", "family": "DM Sans, sans-serif"},
+    "xaxis": {
+        "gridcolor": "rgba(255, 255, 255, 0.05)",
+        "zerolinecolor": "rgba(255, 255, 255, 0.1)",
+        "tickfont": {"size": 10},
+        "titlefont": {"size": 11, "family": "Sora, sans-serif"}
+    },
+    "yaxis": {
+        "gridcolor": "rgba(255, 255, 255, 0.05)",
+        "zerolinecolor": "rgba(255, 255, 255, 0.1)",
+        "tickfont": {"size": 10},
+        "titlefont": {"size": 11, "family": "Sora, sans-serif"}
+    }
+}
+
 # Page configuration for modern premium look
 st.set_page_config(
     page_title="Credit Card Fraud Intelligence & Explainability Platform",
@@ -29,30 +48,33 @@ st.set_page_config(
 # Custom Styling for modern dark theme and glassmorphism cards
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Sora:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
     
-    html, body, [class*="css"] {
-        font-family: 'Outfit', 'Inter', sans-serif;
+    html, body, [class*="css"], .stApp {
+        background-color: #050505;
+        color: #ffffff;
+        font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     
     .main {
-        background-color: #0B0F19;
-        color: #F8FAFC;
+        background-color: #050505;
+        color: #ffffff;
     }
     
-    .stApp {
-        background-color: #0B0F19;
+    h1, h2, h3, h4, h5, h6, [class*="Header"] {
+        font-family: 'Sora', 'Plus Jakarta Sans', sans-serif !important;
+        font-weight: 600;
     }
     
     .metric-card {
-        background: rgba(30, 41, 59, 0.45);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(10, 10, 10, 0.85);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 212, 255, 0.15);
         border-radius: 12px;
         padding: 20px;
         margin-bottom: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        transition: transform 0.2s, border-color 0.2s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -61,25 +83,29 @@ st.markdown("""
     
     .metric-card:hover {
         transform: translateY(-2px);
-        border-color: rgba(255, 75, 75, 0.3);
+        border-color: rgba(168, 85, 247, 0.4);
+        box-shadow: 0 8px 25px rgba(168, 85, 247, 0.2);
     }
     
     .metric-title {
-        font-size: 0.9rem;
-        color: #94A3B8;
+        font-size: 0.85rem;
+        color: #cccccc;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.08em;
         margin-bottom: 5px;
+        font-family: 'Sora', sans-serif;
+        font-weight: 500;
     }
     
     .metric-value {
         font-size: 2rem;
         font-weight: 700;
-        color: #F8FAFC;
+        color: #ffffff;
+        font-family: 'Sora', sans-serif;
     }
     
     .metric-value.savings {
-        color: #10B981;
+        color: #00d4ff;
     }
     
     .metric-value.loss {
@@ -87,19 +113,20 @@ st.markdown("""
     }
     
     .stButton>button {
-        background-color: #ff4b4b;
-        color: white;
-        border-radius: 8px;
-        font-weight: bold;
+        background: linear-gradient(135deg, #00d4ff 0%, #a855f7 100%) !important;
+        color: #050505 !important;
+        border-radius: 12px;
+        font-weight: 700;
         border: none;
         padding: 10px 24px;
-        transition: all 0.3s;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
     }
     
     .stButton>button:hover {
-        background-color: #ff3333;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 75, 75, 0.3);
+        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        color: #050505 !important;
     }
     
     .stTabs [data-baseweb="tab-list"] {
@@ -111,14 +138,14 @@ st.markdown("""
         white-space: pre-wrap;
         background-color: transparent;
         border-radius: 4px;
-        color: #94A3B8;
+        color: #cccccc;
         font-size: 1.1rem;
         font-weight: 600;
     }
     
     .stTabs [aria-selected="true"] {
-        color: #ff4b4b !important;
-        border-bottom-color: #ff4b4b !important;
+        color: #00d4ff !important;
+        border-bottom-color: #00d4ff !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -281,39 +308,37 @@ with tab_performance:
         if test_preds is not None:
             with sub_tab_cost:
                 fig_cost = go.Figure()
-                # Cost curve trace
+                # Cost curve trace - Purple line matching portfolio accent secondary
                 fig_cost.add_trace(go.Scatter(
                     x=t_range, y=cost_vals,
                     mode='lines',
                     name='Operational Cost ($)',
-                    line=dict(color='#ff4b4b', width=3)
+                    line=dict(color='#a855f7', width=3)
                 ))
-                # Optimal marker
+                # Optimal marker - Cyan star matching portfolio accent primary
                 fig_cost.add_trace(go.Scatter(
                     x=[tuned_threshold], y=[tuned_cost],
                     mode='markers+text',
-                    marker=dict(size=14, color='#10B981', symbol='star'),
+                    marker=dict(size=14, color='#00d4ff', symbol='star'),
                     text=[f"Optimal: {tuned_threshold:.4f}"],
                     textposition="bottom center",
                     name="Tuned Threshold"
                 ))
                 # Reference lines
                 fig_cost.add_shape(
-                    type='line', line=dict(dash='dash', color='gray', width=1.5),
+                    type='line', line=dict(dash='dash', color='#737373', width=1.5),
                     x0=0, x1=1, y0=do_nothing, y1=do_nothing
                 )
                 fig_cost.add_annotation(
-                    x=0.5, y=do_nothing, text="Do Nothing Base Cost", showarrow=False, yshift=10, font=dict(color="gray")
+                    x=0.5, y=do_nothing, text="Do Nothing Base Cost", showarrow=False, yshift=10, font=dict(color="#737373")
                 )
                 
                 fig_cost.update_layout(
                     height=450,
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    plot_bgcolor='rgba(30, 41, 59, 0.2)',
-                    font=dict(color="white"),
+                    margin=dict(l=50, r=30, t=30, b=50),
                     xaxis=dict(title="Decision Threshold"),
                     yaxis=dict(title="Total Business Cost ($)"),
-                    margin=dict(l=50, r=30, t=30, b=50)
+                    **PORTFOLIO_THEME
                 )
                 st.plotly_chart(fig_cost, use_container_width=True)
         else:
@@ -336,12 +361,13 @@ with tab_performance:
                     x=recall, y=precision,
                     labels={"x": "Recall (True Positive Rate)", "y": "Precision (PPV)"}
                 )
-                # Highlight tuned threshold
+                fig_pr.update_traces(line=dict(color='#00d4ff', width=3))
+                # Highlight tuned threshold - Purple secondary marker
                 idx_pr = np.argmin(np.abs(pr_thresholds - tuned_threshold))
                 fig_pr.add_trace(go.Scatter(
                     x=[recall[idx_pr]], y=[precision[idx_pr]],
                     mode='markers+text',
-                    marker=dict(size=12, color='#10B981', symbol='circle'),
+                    marker=dict(size=12, color='#a855f7', symbol='circle'),
                     text=[f"Threshold = {tuned_threshold:.4f}"],
                     textposition="top left",
                     name="Tuned Threshold"
@@ -349,9 +375,7 @@ with tab_performance:
                 fig_pr.update_layout(
                     height=450,
                     margin=dict(l=50, r=30, t=30, b=50),
-                    paper_bgcolor='rgba(0,0,0,0)', 
-                    plot_bgcolor='rgba(30, 41, 59, 0.2)', 
-                    font=dict(color="white")
+                    **PORTFOLIO_THEME
                 )
                 st.plotly_chart(fig_pr, use_container_width=True)
                 
@@ -361,14 +385,15 @@ with tab_performance:
                     x=fpr, y=tpr,
                     labels={"x": "False Positive Rate (FPR)", "y": "True Positive Rate (TPR)"}
                 )
+                fig_roc.update_traces(line=dict(color='#00d4ff', width=3))
                 fig_roc.add_shape(
-                    type='line', line=dict(dash='dash', color='gray'), x0=0, x1=1, y0=0, y1=1
+                    type='line', line=dict(dash='dash', color='#737373'), x0=0, x1=1, y0=0, y1=1
                 )
                 idx_roc = np.argmin(np.abs(roc_thresholds - tuned_threshold))
                 fig_roc.add_trace(go.Scatter(
                     x=[fpr[idx_roc]], y=[tpr[idx_roc]],
                     mode='markers+text',
-                    marker=dict(size=12, color='#10B981', symbol='circle'),
+                    marker=dict(size=12, color='#a855f7', symbol='circle'),
                     text=[f"Threshold = {tuned_threshold:.4f}"],
                     textposition="bottom right",
                     name="Tuned Threshold"
@@ -376,9 +401,7 @@ with tab_performance:
                 fig_roc.update_layout(
                     height=450,
                     margin=dict(l=50, r=30, t=30, b=50),
-                    paper_bgcolor='rgba(0,0,0,0)', 
-                    plot_bgcolor='rgba(30, 41, 59, 0.2)', 
-                    font=dict(color="white")
+                    **PORTFOLIO_THEME
                 )
                 st.plotly_chart(fig_roc, use_container_width=True)
         else:
@@ -507,19 +530,20 @@ with tab_sandbox:
             fig_g = go.Figure(go.Indicator(
                 mode = "gauge+number",
                 value = prob * 100,
-                title = {'text': "Fraud Probability (%)", 'font': {'size': 18}},
+                title = {'text': "Fraud Probability (%)", 'font': {'size': 18, 'family': 'Sora'}},
                 gauge = {
                     'axis': {'range': [0, 100], 'tickcolor': "white"},
-                    'bar': {'color': "#EF4444" if is_fraud else "#10B981"},
-                    'bgcolor': "rgba(30, 41, 59, 0.4)",
+                    'bar': {'color': "#a855f7" if is_fraud else "#00d4ff"},
+                    'bgcolor': "#0a0a0a",
                     'borderwidth': 1.5,
+                    'bordercolor': "rgba(255, 255, 255, 0.1)",
                     'steps': [
-                        {'range': [0, tuned_threshold*100], 'color': "rgba(16, 185, 129, 0.1)"},
-                        {'range': [tuned_threshold*100, 100], 'color': "rgba(239, 68, 68, 0.1)"}
+                        {'range': [0, tuned_threshold*100], 'color': "rgba(0, 212, 255, 0.1)"},
+                        {'range': [tuned_threshold*100, 100], 'color': "rgba(168, 85, 247, 0.1)"}
                     ]
                 }
             ))
-            fig_g.update_layout(paper_bgcolor='rgba(0,0,0,0)', font=dict(color="white"), height=280)
+            fig_g.update_layout(paper_bgcolor='rgba(0,0,0,0)', font=dict(color="white", family="Sora, sans-serif"), height=280)
             st.plotly_chart(fig_g, use_container_width=True)
             
         with res_col_r:
@@ -554,8 +578,8 @@ with tab_sandbox:
                         fig, ax = plt.subplots(figsize=(10, 4.45))
                         # Adjust parameters for beautiful display
                         shap.plots.waterfall(shap_values[0], max_display=10, show=False)
-                        fig.patch.set_facecolor('#0B0F19')
-                        ax.set_facecolor('#0B0F19')
+                        fig.patch.set_facecolor('#050505')
+                        ax.set_facecolor('#050505')
                         ax.tick_params(colors='white')
                         ax.xaxis.label.set_color('white')
                         ax.yaxis.label.set_color('white')
@@ -594,15 +618,13 @@ with tab_sandbox:
                     df_ae, x="Squared Error", y="Feature",
                     orientation='h',
                     color="Squared Error",
-                    color_continuous_scale="Reds"
+                    color_continuous_scale=["#00d4ff", "#a855f7"]
                 )
                 fig_ae.update_layout(
                     height=400,
                     margin=dict(l=60, r=20, t=10, b=40),
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    plot_bgcolor='rgba(30, 41, 59, 0.2)',
-                    font=dict(color="white"),
-                    coloraxis_showscale=False
+                    coloraxis_showscale=False,
+                    **PORTFOLIO_THEME
                 )
                 st.plotly_chart(fig_ae, use_container_width=True)
 
@@ -679,14 +701,14 @@ with tab_batch:
                             fig_pie = px.pie(
                                 names=["Approved", "Declined"],
                                 values=[total - flagged, flagged],
-                                color_discrete_sequence=["#10B981", "#EF4444"],
+                                color_discrete_sequence=["#00d4ff", "#a855f7"],
                                 title="Transaction Approval Ratio"
                             )
                             fig_pie.update_layout(
                                 height=380,
                                 margin=dict(l=20, r=20, t=40, b=20),
                                 paper_bgcolor='rgba(0,0,0,0)', 
-                                font=dict(color="white")
+                                font=dict(color="white", family="Sora, sans-serif")
                             )
                             st.plotly_chart(fig_pie, use_container_width=True)
                             
@@ -696,15 +718,13 @@ with tab_batch:
                                 out_df, x="Fraud_Probability",
                                 nbins=50,
                                 title="Model Fraud Probability Distribution",
-                                color_discrete_sequence=["#ff4b4b"]
+                                color_discrete_sequence=["#00d4ff"]
                             )
-                            fig_hist.add_vline(x=tuned_threshold, line_dash="dash", line_color="#10B981")
+                            fig_hist.add_vline(x=tuned_threshold, line_dash="dash", line_color="#a855f7", line_width=2)
                             fig_hist.update_layout(
                                 height=380,
                                 margin=dict(l=20, r=20, t=40, b=20),
-                                paper_bgcolor='rgba(0,0,0,0)', 
-                                plot_bgcolor='rgba(30, 41, 59, 0.2)', 
-                                font=dict(color="white")
+                                **PORTFOLIO_THEME
                             )
                             st.plotly_chart(fig_hist, use_container_width=True)
                             
