@@ -53,8 +53,10 @@ class FraudPredictor:
         if self.pipeline is None:
             raise RuntimeError("Model pipeline is not loaded.")
             
-        # Predict probability
-        probs = self.pipeline.predict_proba(X)[:, 1]
+        # Predict probability (force column ordering)
+        cols_order = ["Time"] + [f"V{i}" for i in range(1, 29)] + ["Amount"]
+        X_aligned = X[cols_order]
+        probs = self.pipeline.predict_proba(X_aligned)[:, 1]
         
         # Classify based on optimal threshold
         preds = (probs >= self.threshold).astype(int)

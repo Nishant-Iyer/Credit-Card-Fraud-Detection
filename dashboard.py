@@ -458,7 +458,8 @@ with tab_sandbox:
         st.plotly_chart(fig_g, use_container_width=True)
     else:
         # Step-by-step feature preprocessing to feed SHAP and Autoencoder reconstruction analysis
-        df_tx = pd.DataFrame([tx_payload])
+        cols_order = ["Time"] + [f"V{i}" for i in range(1, 29)] + ["Amount"]
+        df_tx = pd.DataFrame([tx_payload])[cols_order]
         
         # 1. Transform raw data step-by-step
         X_trans = df_tx.copy()
