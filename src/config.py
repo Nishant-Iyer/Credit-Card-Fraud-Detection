@@ -11,6 +11,7 @@ class DataConfig(BaseModel):
     test_file: str
     target_col: str
     test_size: float = 0.2
+    val_size: float = 0.2
     random_state: int = 42
 
 class FeaturesConfig(BaseModel):

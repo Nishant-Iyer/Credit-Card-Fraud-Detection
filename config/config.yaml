@@ -8,18 +8,21 @@ data:
   test_file: "data/test.csv"
   target_col: "Class"
   test_size: 0.2
+  val_size: 0.2 # share of the training data held out to choose the alert threshold
   random_state: 42
 
 features:
   cyclical_time_period: 86400 # 24 hours in seconds
   scale_cols:
     - "Amount"
+  # The OpenML copy of the dataset (ID 1597) has no Time column, so the model uses V1-V28 and
+  # Amount only. Time is dropped here so API requests that include it score the same way.
   drop_cols:
     - "Time"
 
 models:
   autoencoder:
-    input_dim: 29 # 28 PCA features + scaled Amount + Cyclical sin/cos - Class = 30 features
+    input_dim: 29 # V1-V28 + scaled Amount (the network sizes itself from the data)
     encoding_dim: 16
     epochs: 15
     batch_size: 256

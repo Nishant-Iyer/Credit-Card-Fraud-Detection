@@ -5,19 +5,29 @@ import mlflow
 import mlflow.sklearn
 import pandas as pd
 from typing import Optional
+from sklearn.model_selection import train_test_split
 
 from src.config import AppConfig
 from src.data.downloader import download_credit_card_data
 from src.data.data_loader import load_and_split_data
 from src.models.trainer import build_training_pipeline, train_pipeline
-from src.models.evaluator import optimize_business_threshold, evaluate_model_performance, plot_cost_curve
+from src.models.evaluator import (
+    calculate_business_cost,
+    evaluate_model_performance,
+    optimize_business_threshold,
+    plot_cost_curve,
+)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-def run_train_pipeline(config_path: str = "config/config.yaml") -> str:
+def run_train_pipeline(config_path: str = "config/config.yaml", use_mlflow: bool = True) -> str:
     """
     Runs the complete training and tuning pipeline end-to-end.
+
+    The alert threshold is chosen on a validation split carved out of the training
+    data, then the model is scored once on the untouched test set. (Choosing the
+    threshold on the test set would make the reported savings optimistic.)
     """
     logger.info("Initializing train pipeline...")
     config = AppConfig.load_from_yaml(config_path)
@@ -33,8 +43,16 @@ def run_train_pipeline(config_path: str = "config/config.yaml") -> str:
         target_col=config.data.target_col
     )
     
-    X_train = train_df.drop(columns=[config.data.target_col])
-    y_train = train_df[config.data.target_col]
+    fit_df, val_df = train_test_split(
+        train_df,
+        test_size=config.data.val_size,
+        stratify=train_df[config.data.target_col],
+        random_state=config.data.random_state,
+    )
+    X_train = fit_df.drop(columns=[config.data.target_col])
+    y_train = fit_df[config.data.target_col]
+    X_val = val_df.drop(columns=[config.data.target_col])
+    y_val = val_df[config.data.target_col]
     
     X_test = test_df.drop(columns=[config.data.target_col])
     y_test = test_df[config.data.target_col]
@@ -45,6 +63,8 @@ def run_train_pipeline(config_path: str = "config/config.yaml") -> str:
     # 2. Setup MLflow Tracking
     mlflow_enabled = False
     try:
+        if not use_mlflow:
+            raise RuntimeError("MLflow disabled by caller")
         mlflow.set_tracking_uri(config.mlflow.tracking_uri)
         mlflow.set_experiment(config.mlflow.experiment_name)
         mlflow_enabled = True
@@ -75,19 +95,21 @@ def run_train_pipeline(config_path: str = "config/config.yaml") -> str:
         pipeline_save_path = "artifacts/full_pipeline.joblib"
         train_pipeline(pipeline, X_train, y_train, save_path=pipeline_save_path)
         
-        # 4. Generate Predictions & Optimize Business Threshold
-        logger.info("Generating predictions on test set...")
-        y_prob_test = pipeline.predict_proba(X_test)[:, 1]
-        
+        # 4. Choose the business-optimal threshold on the validation split
+        logger.info("Choosing the alert threshold on the validation split...")
+        y_prob_val = pipeline.predict_proba(X_val)[:, 1]
         best_threshold, opt_results = optimize_business_threshold(
-            y_true=y_test.values,
-            y_prob=y_prob_test,
-            amounts=amounts_test,
+            y_true=y_val.values,
+            y_prob=y_prob_val,
+            amounts=X_val["Amount"].values,
             manual_review_cost=config.business_costs.manual_review_cost,
             fraud_cost_factor=config.business_costs.fraud_cost_factor
         )
-        
-        # 5. Evaluate and save plots
+        plot_cost_curve(opt_results, best_threshold, output_path="artifacts/cost_curve.png")
+
+        # 5. Score the untouched test set once, at that threshold
+        logger.info("Evaluating on the test set...")
+        y_prob_test = pipeline.predict_proba(X_test)[:, 1]
         metrics = evaluate_model_performance(
             y_true=y_test,
             y_prob=y_prob_test,
@@ -95,19 +117,26 @@ def run_train_pipeline(config_path: str = "config/config.yaml") -> str:
             threshold=best_threshold,
             output_dir="artifacts"
         )
-        
-        plot_cost_curve(opt_results, best_threshold, output_path="artifacts/cost_curve.png")
-        
+        y_pred_test = (y_prob_test >= best_threshold).astype(int)
+        test_cost = calculate_business_cost(
+            y_test.values, y_pred_test, amounts_test,
+            config.business_costs.manual_review_cost, config.business_costs.fraud_cost_factor
+        )
+        do_nothing_test = float((amounts_test[y_test.values == 1] * config.business_costs.fraud_cost_factor).sum())
+
         # 6. Save metadata
         metadata = {
             "optimal_threshold": best_threshold,
+            "threshold_chosen_on": "validation split",
             "metrics": metrics,
             "business_metrics": {
-                "min_business_cost": opt_results["min_cost"],
-                "do_nothing_cost": opt_results["do_nothing_cost"],
-                "review_all_cost": opt_results["review_all_cost"],
-                "savings_vs_nothing": opt_results["savings_vs_nothing"]
-            }
+                "min_business_cost": test_cost,
+                "do_nothing_cost": do_nothing_test,
+                "review_all_cost": float(len(y_test) * config.business_costs.manual_review_cost),
+                "savings_vs_nothing": do_nothing_test - test_cost,
+                "validation_min_cost": opt_results["min_cost"]
+            },
+            "sizes": {"fit": int(len(fit_df)), "validation": int(len(val_df)), "test": int(len(test_df))}
         }
         
         metadata_path = "artifacts/metadata.json"
@@ -125,8 +154,8 @@ def run_train_pipeline(config_path: str = "config/config.yaml") -> str:
                 "recall": metrics["recall"],
                 "f1_score": metrics["f1_score"],
                 "optimal_threshold": best_threshold,
-                "business_cost": opt_results["min_cost"],
-                "business_savings": opt_results["savings_vs_nothing"]
+                "business_cost": test_cost,
+                "business_savings": do_nothing_test - test_cost
             })
             
             # Log artifacts
