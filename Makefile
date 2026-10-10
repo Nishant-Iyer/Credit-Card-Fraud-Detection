@@ -8,7 +8,7 @@ pytest = .venv/bin/pytest
 
 install:
 	@echo "Installing dependencies..."
-	/Users/nishant/.local/bin/uv pip install -r requirements.txt
+	pip install -r requirements.txt
 
 train:
 	@echo "Running train pipeline..."
