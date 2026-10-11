@@ -1,25 +1,25 @@
 {
-    "optimal_threshold": 0.23169346733668342,
+    "optimal_threshold": 0.9839547738693467,
     "threshold_chosen_on": "validation split",
     "metrics": {
-        "auprc": 0.8626494337557242,
-        "roc_auc": 0.9807966447693314,
-        "precision": 0.7033898305084746,
-        "recall": 0.8469387755102041,
-        "f1_score": 0.7685185185185185,
+        "auprc": 0.8639748953220848,
+        "roc_auc": 0.9791618814098515,
+        "precision": 0.8586956521739131,
+        "recall": 0.8061224489795918,
+        "f1_score": 0.8315789473684211,
         "confusion_matrix": {
-            "tn": 56829,
-            "fp": 35,
-            "fn": 15,
-            "tp": 83
+            "tn": 56851,
+            "fp": 13,
+            "fn": 19,
+            "tp": 79
         }
     },
     "business_metrics": {
-        "min_business_cost": 2666.0,
+        "min_business_cost": 2644.35,
         "do_nothing_cost": 10644.93,
         "review_all_cost": 284810.0,
-        "savings_vs_nothing": 7978.93,
-        "validation_min_cost": 1750.55
+        "savings_vs_nothing": 8000.58,
+        "validation_min_cost": 1962.72
     },
     "sizes": {
         "fit": 182276,
