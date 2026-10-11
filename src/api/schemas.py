@@ -1,8 +1,12 @@
+from typing import Any, ClassVar
+
 from pydantic import BaseModel, Field
-from typing import Dict, Any
+
 
 class TransactionInput(BaseModel):
-    Time: float = Field(..., description="Seconds elapsed since the first transaction", example=0.0)
+    Time: float = Field(
+        ..., description="Seconds elapsed since the first transaction", example=0.0
+    )
     V1: float = Field(..., example=-1.359807)
     V2: float = Field(..., example=-0.072781)
     V3: float = Field(..., example=2.536347)
@@ -34,20 +38,48 @@ class TransactionInput(BaseModel):
     Amount: float = Field(..., description="Transaction amount in USD", example=149.62)
 
     class Config:
-        json_schema_extra = {
+        json_schema_extra: ClassVar[dict[str, Any]] = {
             "example": {
-                "Time": 80.0, "V1": -1.359, "V2": -0.072, "V3": 2.536, "V4": 1.378,
-                "V5": -0.338, "V6": 0.462, "V7": 0.239, "V8": 0.098, "V9": 0.363,
-                "V10": 0.090, "V11": -0.551, "V12": -0.617, "V13": -0.991, "V14": -0.311,
-                "V15": 1.468, "V16": -0.470, "V17": 0.207, "V18": 0.025, "V19": 0.403,
-                "V20": 0.251, "V21": -0.018, "V22": 0.277, "V23": -0.110, "V24": 0.066,
-                "V25": 0.128, "V26": -0.189, "V27": 0.133, "V28": -0.021, "Amount": 149.62
+                "Time": 80.0,
+                "V1": -1.359,
+                "V2": -0.072,
+                "V3": 2.536,
+                "V4": 1.378,
+                "V5": -0.338,
+                "V6": 0.462,
+                "V7": 0.239,
+                "V8": 0.098,
+                "V9": 0.363,
+                "V10": 0.090,
+                "V11": -0.551,
+                "V12": -0.617,
+                "V13": -0.991,
+                "V14": -0.311,
+                "V15": 1.468,
+                "V16": -0.470,
+                "V17": 0.207,
+                "V18": 0.025,
+                "V19": 0.403,
+                "V20": 0.251,
+                "V21": -0.018,
+                "V22": 0.277,
+                "V23": -0.110,
+                "V24": 0.066,
+                "V25": 0.128,
+                "V26": -0.189,
+                "V27": 0.133,
+                "V28": -0.021,
+                "Amount": 149.62,
             }
         }
 
 
 class TransactionPredictionResponse(BaseModel):
-    fraud_probability: float = Field(..., description="The probability that the transaction is fraudulent")
-    is_fraud: bool = Field(..., description="Binary decision based on optimized cost threshold")
+    fraud_probability: float = Field(
+        ..., description="The probability that the transaction is fraudulent"
+    )
+    is_fraud: bool = Field(
+        ..., description="Binary decision based on optimized cost threshold"
+    )
     threshold_applied: float = Field(..., description="The decision threshold used")
     status: str = Field("success", description="Prediction status flag")

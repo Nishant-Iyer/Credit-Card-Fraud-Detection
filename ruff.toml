@@ -1,0 +1,2 @@
+# Lint and format settings (the Ruff version is pinned in .github/workflows/ci-cd.yml)
+target-version = "py311"
