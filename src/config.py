@@ -1,7 +1,8 @@
 import os
+
 import yaml
-from typing import List, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+
 
 class DataConfig(BaseModel):
     openml_id: int
@@ -14,10 +15,12 @@ class DataConfig(BaseModel):
     val_size: float = 0.2
     random_state: int = 42
 
+
 class FeaturesConfig(BaseModel):
     cyclical_time_period: float = 86400.0
-    scale_cols: List[str]
-    drop_cols: List[str]
+    scale_cols: list[str]
+    drop_cols: list[str]
+
 
 class AutoencoderConfig(BaseModel):
     input_dim: int
@@ -27,6 +30,7 @@ class AutoencoderConfig(BaseModel):
     learning_rate: float = 0.001
     model_path: str = "artifacts/autoencoder.pt"
 
+
 class XGBoostConfig(BaseModel):
     n_estimators: int = 200
     max_depth: int = 6
@@ -34,6 +38,7 @@ class XGBoostConfig(BaseModel):
     subsample: float = 0.8
     colsample_bytree: float = 0.8
     scale_pos_weight: float = 1.0
+
 
 class LightGBMConfig(BaseModel):
     n_estimators: int = 200
@@ -43,19 +48,23 @@ class LightGBMConfig(BaseModel):
     subsample: float = 0.8
     colsample_bytree: float = 0.8
 
+
 class ModelsConfig(BaseModel):
     autoencoder: AutoencoderConfig
     xgboost: XGBoostConfig
     lightgbm: LightGBMConfig
 
+
 class BusinessCostsConfig(BaseModel):
     manual_review_cost: float = 5.0
     fraud_cost_factor: float = 1.0
+
 
 class MLflowConfig(BaseModel):
     tracking_uri: str
     experiment_name: str
     run_name: str
+
 
 class AppConfig(BaseModel):
     data: DataConfig
