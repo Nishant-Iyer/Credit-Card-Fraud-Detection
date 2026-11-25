@@ -2,7 +2,7 @@
 
 A fraud model tuned for money, not accuracy. Only 0.17% of transactions are fraud, so instead of the default 0.5 cut-off, the pipeline picks the alert threshold that minimizes the real cost: analyst time spent reviewing alerts plus fraud that slips through.
 
-**[Live demo](https://www.konnectingnots.com/demos/fraud.html)** · **[Case study](https://www.konnectingnots.com/projects/credit-card-fraud.html)**
+**[Live demo](https://nishant-iyer.github.io/demos/fraud.html)** · **[Case study](https://nishant-iyer.github.io/projects/credit-card-fraud.html)**
 
 ## Results
 
